@@ -1,0 +1,11 @@
+.station-status > .btn {
+	font-size: 12px;
+	padding: 3px 6px;
+	line-height: 13px;
+}
+
+
+.station-status > .btn.ss-on.active {
+	color: #ffffff;
+	background-color: #51a351;
+}
