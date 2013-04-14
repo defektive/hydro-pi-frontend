@@ -14,7 +14,7 @@ var express = require('express'),
 
 	};
 
-server.listen(3000, "0.0.0.0");
+server.listen(8082, "0.0.0.0");
 
 var userSocket = io.on('connection', function (socket) {
 	//setInterval(sendTest.bind(socket), 6000);
