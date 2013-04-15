@@ -5,16 +5,21 @@ var express = require('express'),
 	server = require('http').createServer(app),
 	io = require('socket.io').listen(server),
 	request = require('request'),
-
 	exphbs  = require('express3-handlebars'),
 	path = require('path'),
 	baseContext = {
 		title: "Hydro-&#x03C0;",
 		subtitle: ""
 
-	};
+	},
 
-server.listen(8082, "0.0.0.0");
+	Scheduler = require("hydro-pi-scheduler");
+
+
+
+app.use("/api", Scheduler);
+
+server.listen(8080, "0.0.0.0");
 
 var userSocket = io.on('connection', function (socket) {
 	//setInterval(sendTest.bind(socket), 6000);
@@ -31,3 +36,4 @@ app.set('view engine', 'handlebars');
 app.get('/', function (req, res, next) {
 	res.render('home');
 });
+

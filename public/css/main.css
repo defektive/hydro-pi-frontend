@@ -9,3 +9,7 @@
 	color: #ffffff;
 	background-color: #51a351;
 }
+
+#sidebar li {
+	line-height: 28px;
+}

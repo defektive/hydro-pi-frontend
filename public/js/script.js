@@ -1,145 +1,83 @@
-var UPCModel = Backbone.Model.extend({
-	urlRoot: "/upc/",
-	idAttribute: "id",
+var StationModel = Backbone.Model.extend({
+	urlRoot: "/api/stations/",
 
 	defaults: {
-		"valid": "true",
-		"number": "0",
-		"itemname": "Loading...",
-		// "description": "http:\/\/upcdatabase.org\/code\/0111222333446",
-		"price": 0.00,
-		"ratingsup": 0,
-		"ratingsdown": 0
-	},
-
-	initialize: function (options){
-		this.on("sync", function (){
-			if(this.get("id") == this.get("number")){
-				this.set("id", new Date().getTime());
-			}
-		});
+		"number": 0,
+		"name": "[Please name me]",
+		"region": "Front Yard",
+		"status":  false,
+		"active": false
 	}
 });
 
-var ShoppingCart = Backbone.Collection.extend({
-	model: UPCModel,
-
-	initialize: function(options){
-		this.on("add", this.handleAdd);
-	},
-
-	timeout: false,
-	handleAdd: function (){
-		if(this.timeout){
-			clearTimeout(this.timeout);
-		}
-
-		this.timeout = _.delay(this.emptyCart.bind(this), 10000);
-	},
-
-	emptyCart: function(){
-		this.reset();
-	},
-
-	getTotal: function (){
-		// thanks winchester
-		return Math.round(this.reduce(function(memo, item){return memo + parseFloat(item.get('price'), 10);},0) *100) / 100;
-	}
+var StationCollection = Backbone.Collection.extend({
+	model: StationModel,
+	url: "/api/stations/"
 });
 
-var ShoppingCartView = Backbone.View.extend({
+var SidebarView = Backbone.View.extend({
 
-	socket: null, // used for the rfid badge
 	initialize: function (options){
-		this.listenTo(this.collection, "add", this.addItem);
-		this.listenTo(this.collection, "reset", this.handleReset);
-		this.listenTo(this.collection, "change", this.handleChange);
-
-		this.socket = io.connect();
-		this.listenTo(this.socket, 'id', this.handleCheckout.bind(this));
-		this.$el.addClass("empty");
+		this.listenTo(this.collection, 'add', this.handleAdd);
 	},
 
-	addItem: function (model){
-		this.$el.removeClass("empty");
-		var el = $("<div>");
-		new UPCView({
+	handleAdd: function (model){
+		var el = $("<li>");
+		this.$el.append(el);
+
+		new SidebarStationView({
 			model: model,
 			el: el
 		}).render();
-
-		this.$(".fm-items").append(el);
-	},
-
-	handleChange: function (){
-		this.$(".fm-total").text(this.collection.getTotal());
-	},
-
-	handleReset: function (){
-		this.$(".fm-items").html("");
-		this.$el.addClass("empty");
-	},
-
-	handleCheckout: function(data){
-		console.log(data);
-		if(!this.$el.hasClass("empty")){
-			this.$(".fm-items").html("<div class='thanks'>Thanks!!!</div>");
-		}
 	}
-
 });
 
-var UPCView = Backbone.View.extend({
-	className: "fm-item",
+var SidebarStationView = Backbone.View.extend({
+
+	events:{
+		"click .btn": "handleClick"
+	},
 
 	initialize: function (options){
-		this.listenTo(this.model, "change", this.render);
-		this.$el.addClass(this.className);
+		this.template = _.template($("#sidebar-station").html());
 	},
 
 	render: function (){
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
 
-		var name = this.model.get("itemname");
-		if(!name.length){
-			name = this.model.get("description");
+	handleClick: function (event){
+		var target = $(event.target);
+		console.log(target.hasClass("ss-on"));
+		if(target.hasClass("ss-on")){
+			this.model.set('status', true);
+			this.model.save();
+		} else {
+
+			this.model.set('status', false);
+			this.model.save();
 		}
-
-		this.$el.html("<span class='fm-item-name'>" + name + "</span><span class='fm-item-price fm-currency'>" + this.model.get("price") + "</span>");
 	}
 });
 
-var shoppingCart = new ShoppingCart();
-var shoppingCartView = new ShoppingCartView({
-	el: ".sidebar-nav",
-	collection: shoppingCart
+$().ready(function (){
+
+var sidebar = $("#sidebar");
+if(sidebar){
+
+
+	var AllStations = new StationCollection();
+	new SidebarView({
+		collection: AllStations,
+		el: sidebar
+	});
+
+
+	AllStations.fetch({
+		success: function(){
+			console.log(arguments);
+		}
+	});
+}
 });
-
-var code = "",
-	timeout = false;
-
-$(window).keypress(function (event){
-	code += String.fromCharCode(event.which);
-	if(timeout){
-		clearTimeout(timeout);
-	}
-
-	timeout = setTimeout(handleNewBarcode, 50);
-});
-
-var handleNewBarcode = function (){
-
-	var myCode = code.replace(/\s+/g, '');
-	code = "";
-	timeout = false;
-
-	if(myCode.length){
-
-		var upc = new UPCModel({id: myCode});
-		shoppingCart.add(upc);
-
-		upc.fetch();
-
-	}
-};
-
-

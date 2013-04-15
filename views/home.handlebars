@@ -3,47 +3,8 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Front Yard</li>
-              <li><a href="#">Park Strip
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div>
+            <ul class="nav nav-list" id="sidebar">
 
-              </a></li>
-              <li><a href="#">House
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div></a></li>
-              <li><a href="#">Drive Way
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div></a></li>
-              <li class="nav-header">Back Yard</li>
-              <li><a href="#">House
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div></a></li>
-              <li><a href="#">Side Yard
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div></a></li>
-              <li><a href="#">Rocks
-              	
-				<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				  <button class="btn ss-on">On</button>
-				  <button class="btn ss-off active">Off</button>
-				</div></a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
@@ -63,4 +24,13 @@
 
           <!--/row-->
         </div><!--/span-->
-      </div><!--/row-->
+    </div><!--/row-->
+
+
+		<script type="text/template" id="sidebar-station">
+			<%= name %>
+			<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
+				<button class="btn ss-on">On</button>
+				<button class="btn ss-off active">Off</button>
+			</div>
+		</script>

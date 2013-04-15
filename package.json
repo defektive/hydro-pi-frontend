@@ -9,6 +9,7 @@
     "express": "3.0.6",
 	"socket.io": "*",
 	"express3-handlebars": "*",
-    "request": "*"
+    "request": "*",
+    "hydro-pi-scheduler": "https://github.com/bh0/hydro-pi-scheduler/tarball/master"
   }
 }
