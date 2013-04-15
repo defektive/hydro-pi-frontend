@@ -30,7 +30,7 @@
 		<script type="text/template" id="sidebar-station">
 			<%= name %>
 			<div class="btn-group pull-right station-status" data-toggle="buttons-radio">
-				<button class="btn ss-on">On</button>
-				<button class="btn ss-off active">Off</button>
+				<button class="btn ss-on <%= status === true ? 'active' : '' %>">On</button>
+				<button class="btn ss-off <%= status === false ? 'active' : '' %>">Off</button>
 			</div>
 		</script>

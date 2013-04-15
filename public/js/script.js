@@ -1,4 +1,5 @@
 var StationModel = Backbone.Model.extend({
+	idAttribute: "_id",
 	urlRoot: "/api/stations/",
 
 	defaults: {
@@ -49,15 +50,8 @@ var SidebarStationView = Backbone.View.extend({
 
 	handleClick: function (event){
 		var target = $(event.target);
-		console.log(target.hasClass("ss-on"));
-		if(target.hasClass("ss-on")){
-			this.model.set('status', true);
+			this.model.set('status', target.hasClass("ss-on"));
 			this.model.save();
-		} else {
-
-			this.model.set('status', false);
-			this.model.save();
-		}
 	}
 });
 
@@ -66,18 +60,12 @@ $().ready(function (){
 var sidebar = $("#sidebar");
 if(sidebar){
 
-
 	var AllStations = new StationCollection();
 	new SidebarView({
 		collection: AllStations,
 		el: sidebar
 	});
 
-
-	AllStations.fetch({
-		success: function(){
-			console.log(arguments);
-		}
-	});
+	AllStations.fetch();
 }
 });
