@@ -5,7 +5,7 @@ var StationModel = Backbone.Model.extend({
 	defaults: {
 		"number": 0,
 		"name": "[Please name me]",
-		"region": "Front Yard",
+		"region": "none",
 		"status":  false,
 		"active": false
 	}
@@ -66,7 +66,7 @@ var SidebarView = Backbone.View.extend({
 				var region = model.get('region');
 				if(!this.regions[region]){
 					this.regions[region] = new Region();
-					var el = $("ul");
+					var el = $("<ul>");
 
 					this.$el.append(el);
 					new RegionView({
