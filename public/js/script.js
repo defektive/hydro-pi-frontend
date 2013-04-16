@@ -16,21 +16,68 @@ var StationCollection = Backbone.Collection.extend({
 	url: "/api/stations/"
 });
 
+var Region = StationCollection.extend({
+
+});
+
+var RegionView = Backbone.View.extend({
+	initialize: function (options){
+		this.listenTo(this.collection, "add", this.handleStationAdd);
+
+		this.$el.addClass("nav");
+		this.$el.addClass("nav-list");
+		this.template = _.template($("#sidebar-region").html());
+	},
+
+	render: function (){
+		this.$el.html(this.template({region: this.options.region}));
+		return this;
+	},
+
+	handleStationAdd: function (model){
+
+		var el = $("<li>");
+		this.$el.append(el);
+
+		new SidebarStationView({
+			model: model,
+			el: el
+		}).render();
+	}
+});
+
 var SidebarView = Backbone.View.extend({
 
 	initialize: function (options){
-		this.listenTo(this.collection, 'add', this.handleAdd);
+		this.regions = {};
+
+
+		this.collection.fetch({
+			success: this.fetchSuccess.bind(this)
+		});
 	},
 
-	handleAdd: function (model){
-		if(model.get('available') !== false){
-			var el = $("<li>");
-			this.$el.append(el);
+	fetchSuccess: function (){
+		var mLen = this.collection.length;
 
-			new SidebarStationView({
-				model: model,
-				el: el
-			}).render();
+		while(mLen--){
+			var model = this.collection.at(mLen);
+			if(model.get('available') !== false){
+				var region = model.get('region');
+				if(!this.regions[region]){
+					this.regions[region] = new Region();
+					var el = $("ul");
+
+					this.$el.append(el);
+					new RegionView({
+						el: el,
+						collection: this.regions[region],
+						region: region
+					}).render();
+				}
+
+				this.regions[region].add(model);
+			}
 		}
 	}
 });
@@ -59,15 +106,13 @@ var SidebarStationView = Backbone.View.extend({
 
 $().ready(function (){
 
-var sidebar = $("#sidebar");
-if(sidebar){
+	var sidebar = $("#sidebar");
+	if(sidebar){
 
-	var AllStations = new StationCollection();
-	new SidebarView({
-		collection: AllStations,
-		el: sidebar
-	});
-
-	AllStations.fetch();
-}
+		var allStations = new StationCollection();
+		new SidebarView({
+			collection: allStations,
+			el: sidebar
+		});
+	}
 });

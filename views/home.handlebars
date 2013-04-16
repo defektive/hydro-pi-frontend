@@ -2,11 +2,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list" id="sidebar">
-
-            </ul>
-          </div><!--/.well -->
+          <div class="well sidebar-nav" id="sidebar"></div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
 
@@ -35,3 +31,8 @@
 				<button class="btn ss-off <%= status === false ? 'active' : '' %>">Off</button>
 			</div>
 		</script>
+
+		<script type="text/template" id="sidebar-region">
+        	<li class="nav-header"><%= region %></li>
+		</script>
+		
