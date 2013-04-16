@@ -23,13 +23,15 @@ var SidebarView = Backbone.View.extend({
 	},
 
 	handleAdd: function (model){
-		var el = $("<li>");
-		this.$el.append(el);
+		if(model.get('available') !== false){
+			var el = $("<li>");
+			this.$el.append(el);
 
-		new SidebarStationView({
-			model: model,
-			el: el
-		}).render();
+			new SidebarStationView({
+				model: model,
+				el: el
+			}).render();
+		}
 	}
 });
 
